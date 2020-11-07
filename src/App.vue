@@ -1,32 +1,44 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <b-row>
+    <b-col></b-col>
+    <b-col lg="4" md="6" sm="10">
+      <b-card>
+        <b-form-file
+          :state="Boolean(image)"
+          placeholder="Pilih file..."
+          drop-placeholder="Drop file here..."
+          @change="onImageSelected"
+          accept="image/*"
+        ></b-form-file>
+
+        <b-img :src="image" fluid alt="<<image>>"></b-img>
+      </b-card>
+    </b-col>
+    <b-col></b-col>
+  </b-row>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+export default {
+  data: () => ({
+    image: "https://picsum.photos/1024/720/?image=41",
+  }),
+  methods: {
+    onImageSelected(e) {
+      const file = e.target.files[0];
+      this.createBase64(file, (result) => {
+        this.image = result;
+      });
+    },
 
-#nav {
-  padding: 30px;
-}
+    createBase64(file, onload) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        onload(e.target.result);
+      };
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+      reader.readAsDataURL(file);
+    }
+  },
 }
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+</script>
